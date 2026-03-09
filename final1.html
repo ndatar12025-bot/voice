@@ -70,7 +70,7 @@ background:#87ceeb;
 
 <canvas id="game" width="400" height="600"></canvas>
 
-<audio id="music" loop preload="auto">
+<audio id="music" loop preload="auto" playsinline>
 <source src="https://ndatar12025-bot.github.io/voice/audio.mp3" type="audio/mpeg">
 </audio>
 
@@ -119,21 +119,23 @@ function jump(e){
 
 if(e) e.preventDefault()
 
-bird.velocity=bird.lift
-
-/* start audio on first interaction */
+bird.velocity = bird.lift
 
 if(!started){
 
-music.play().catch(()=>{})
-started=true
+music.muted = true
+music.play().then(()=>{
+music.muted = false
+}).catch(()=>{})
+
+started = true
 
 }
 
 }
 
-document.addEventListener("click",jump)
-document.addEventListener("touchstart",jump,{passive:false})
+document.addEventListener("touchstart", jump, { passive:false })
+document.addEventListener("click", jump)
 
 /* update physics */
 
@@ -250,3 +252,4 @@ gameLoop()
 </body>
 
 </html>
+
