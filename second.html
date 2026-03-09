@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hidden Art Experience</title>
 
@@ -15,7 +14,6 @@ font-family:Segoe UI;
 }
 
 body{
-
 height:100vh;
 overflow:hidden;
 
@@ -27,64 +25,62 @@ color:white;
 font-size:48px;
 text-align:center;
 
+background:black;
 transition:background 0.1s;
-
 }
 
-/* glowing text */
-
 #text{
-
 z-index:2;
 animation:glow 1s infinite alternate;
-
 }
 
 @keyframes glow{
-
-from{
-text-shadow:0 0 10px white;
-}
-
-to{
-text-shadow:0 0 40px white,0 0 60px white;
-}
-
+from{ text-shadow:0 0 10px white; }
+to{ text-shadow:0 0 40px white,0 0 60px white; }
 }
 
 canvas{
-
 position:absolute;
 top:0;
 left:0;
-
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div id="text">You Discovered The Hidden Art</div>
 
-<audio id="music" autoplay loop preload="auto">
+<audio id="music" autoplay loop preload="auto" playsinline>
 <source src="https://ndatar12025-bot.github.io/voice/audio.mp3" type="audio/mpeg">
-  <source src="https://ndatar12025-bot.github.io/voice/audio.m4a" type="audio/mp4">
-  <source src="https://ndatar12025-bot.github.io/voice/audio.aac" type="audio/mp4">
-  
 </audio>
 
 <canvas id="canvas"></canvas>
 
 <script>
 
-/* play audio when page loads */
-
 const music = document.getElementById("music")
-  const music = document.getElementById("music")
 
+/* retry audio if blocked */
 
+function tryPlay(){
+music.play().catch(()=>{
+setTimeout(tryPlay,500)
+})
+}
+
+window.addEventListener("load", tryPlay)
+
+/* unlock audio on mobile interaction */
+
+document.addEventListener("touchstart",()=>{
+music.play().catch(()=>{})
+},{once:true})
+
+document.addEventListener("click",()=>{
+music.play().catch(()=>{})
+},{once:true})
 
 /* RANDOM BACKGROUND COLORS */
 
@@ -100,7 +96,7 @@ document.body.style.background="rgb("+r+","+g+","+b+")"
 
 setInterval(changeColor,120)
 
-/* PARTICLE ANIMATION */
+/* PARTICLES */
 
 const canvas=document.getElementById("canvas")
 const ctx=canvas.getContext("2d")
@@ -111,7 +107,6 @@ canvas.height=window.innerHeight
 let particles=[]
 
 for(let i=0;i<80;i++){
-
 particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
@@ -119,7 +114,6 @@ size:Math.random()*3+1,
 speedX:(Math.random()-0.5)*1,
 speedY:(Math.random()-0.5)*1
 })
-
 }
 
 function animate(){
@@ -152,7 +146,6 @@ animate()
 
 </body>
 </html>
-
 
 
 
