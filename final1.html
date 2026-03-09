@@ -73,6 +73,20 @@ background:#87ceeb;
 <audio id="music" loop preload="auto" playsinline>
 <source src="https://ndatar12025-bot.github.io/voice/audio.mp3" type="audio/mpeg">
 </audio>
+  let audioUnlocked = false;
+
+function unlockAudio() {
+    if (!audioUnlocked) {
+        music.play().then(() => {
+            music.pause();
+            music.currentTime = 0;
+            audioUnlocked = true;
+        }).catch(()=>{});
+    }
+}
+
+document.addEventListener("touchstart", unlockAudio, { once:true });
+document.addEventListener("click", unlockAudio, { once:true });
 
 <script>
 
@@ -252,4 +266,5 @@ gameLoop()
 </body>
 
 </html>
+
 
