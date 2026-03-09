@@ -81,6 +81,15 @@ left:0;
 /* play audio when page loads */
 
 const music = document.getElementById("music")
+  const music = document.getElementById("music")
+
+function playAudio(){
+music.play().catch(()=>{
+setTimeout(playAudio,500)
+})
+}
+
+window.addEventListener("load",playAudio)
 
 window.addEventListener("load",()=>{
 music.play().catch(()=>{})
@@ -152,5 +161,6 @@ animate()
 
 </body>
 </html>
+
 
 
