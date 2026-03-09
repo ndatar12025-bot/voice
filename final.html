@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Pop</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+
+height:100vh;
+overflow:hidden;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+
+color:white;
+
+background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#a18cd1,#84fab0);
+background-size:400% 400%;
+
+animation:gradientMove 12s ease infinite;
+
+}
+
+@keyframes gradientMove{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
+
+h1{
+margin-bottom:5px;
+}
+
+p{
+opacity:0.8;
+margin-bottom:20px;
+}
+
+/* score + combo */
+
+#hud{
+
+position:absolute;
+top:15px;
+left:15px;
+
+font-size:18px;
+
+background:rgba(0,0,0,0.35);
+padding:10px 15px;
+border-radius:10px;
+
+}
+
+#game{
+
+position:relative;
+
+width:90vw;
+height:65vh;
+
+border:2px solid rgba(255,255,255,0.6);
+border-radius:12px;
+
+overflow:hidden;
+
+backdrop-filter:blur(6px);
+
+}
+
+.bubble{
+
+position:absolute;
+border-radius:50%;
+cursor:pointer;
+
+box-shadow:0 0 20px rgba(255,255,255,0.6);
+
+animation:float linear forwards;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="hud">
+Score: <span id="score">0</span><br>
+Combo: <span id="combo">1x</span>
+</div>
+
+<h1>Pop The Colors</h1>
+<p>Tap the bubbles fast</p>
+
+<div id="game"></div>
+
+<audio id="music" loop>
+<source src="https://ndatar12025-bot.github.io/voice/sound-[AudioTrimmer.com].mp3" type="audio/mpeg">
+</audio>
+
+<audio id="pop">
+<source src="pop.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+const game=document.getElementById("game")
+const music=document.getElementById("music")
+const pop=document.getElementById("pop")
+
+const scoreText=document.getElementById("score")
+const comboText=document.getElementById("combo")
+
+let score=0
+let combo=1
+let lastClick=0
+let started=false
+
+let spawnSpeed=800
+
+const colors=[
+"#ff6b6b",
+"#ffd93d",
+"#6bcBef",
+"#a0e7e5",
+"#b388ff",
+"#ff9a9e"
+]
+
+/* bubble generator */
+
+function createBubble(){
+
+let bubble=document.createElement("div")
+bubble.classList.add("bubble")
+
+let size=Math.random()*60+30
+
+bubble.style.width=size+"px"
+bubble.style.height=size+"px"
+
+bubble.style.left=Math.random()*(window.innerWidth-80)+"px"
+bubble.style.bottom="-100px"
+
+bubble.style.background=
+colors[Math.floor(Math.random()*colors.length)]
+
+let duration=4-(score*0.02)
+if(duration<1.5) duration=1.5
+
+bubble.style.animation=`float ${duration}s linear forwards`
+
+game.appendChild(bubble)
+
+bubble.addEventListener("click",popBubble)
+bubble.addEventListener("touchstart",popBubble)
+
+setTimeout(()=>bubble.remove(),duration*1000)
+
+}
+
+/* popping logic */
+
+function popBubble(e){
+
+e.preventDefault()
+
+this.remove()
+
+let now=Date.now()
+
+if(now-lastClick<700){
+combo++
+}else{
+combo=1
+}
+
+lastClick=now
+
+score+=combo
+
+scoreText.innerText=score
+comboText.innerText=combo+"x"
+
+/* pop sound */
+
+pop.currentTime=0
+pop.play()
+
+/* start music on first click */
+
+if(!started){
+music.play().catch(()=>{})
+started=true
+}
+
+/* speed up game */
+
+spawnSpeed=800-(score*3)
+if(spawnSpeed<200) spawnSpeed=200
+
+}
+
+/* spawn loop */
+
+function spawnLoop(){
+
+createBubble()
+
+setTimeout(spawnLoop,spawnSpeed)
+
+}
+
+spawnLoop()
+
+</script>
+
+</body>
+</html>
