@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Private Art Gallery</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+
+height:100vh;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+color:white;
+text-align:center;
+
+cursor:pointer;
+
+}
+
+/* remove default link style */
+
+a{
+text-decoration:none;
+color:inherit;
+display:block;
+height:100%;
+width:100%;
+}
+
+/* container */
+
+.container{
+
+display:flex;
+flex-direction:column;
+align-items:center;
+
+}
+
+/* frame */
+
+.frame{
+
+width:320px;
+height:420px;
+
+border:8px solid #1b1b1b;
+border-radius:8px;
+
+overflow:hidden;
+
+box-shadow:0 20px 40px rgba(0,0,0,0.6);
+
+margin-bottom:40px;
+
+position:relative;
+
+}
+
+.frame img{
+
+width:100%;
+height:100%;
+object-fit:cover;
+
+filter:blur(12px) brightness(0.6);
+transform:scale(1.2);
+
+}
+
+.frame::after{
+
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:radial-gradient(circle,transparent,rgba(0,0,0,0.7));
+
+}
+
+/* text */
+
+h1{
+
+font-size:34px;
+margin-bottom:10px;
+
+}
+
+p{
+
+opacity:0.7;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<a href="second.html">
+
+<div class="container">
+
+<div class="frame">
+
+<img src="https://thumbs.dreamstime.com/b/beautiful-erotic-women-shawl-part-6-3926936.jpg">
+
+</div>
+
+<h1>Artwork</h1>
+
+<p>Tap anywhere to reveal the hidden gallery</p>
+
+</div>
+
+</a>
+
+</body>
+
+</html>
