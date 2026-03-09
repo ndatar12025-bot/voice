@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Color Pop</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+
+height:100vh;
+overflow:hidden;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+
+color:white;
+
+/* aesthetic gradient background */
+
+background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#a18cd1,#84fab0);
+background-size:400% 400%;
+
+animation:gradientMove 12s ease infinite;
+
+}
+
+/* smooth gradient animation */
+
+@keyframes gradientMove{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
+
+/* title */
+
+h1{
+margin-bottom:5px;
+}
+
+p{
+opacity:0.8;
+margin-bottom:20px;
+}
+
+/* scoreboard */
+
+#scoreBoard{
+
+position:absolute;
+top:20px;
+left:20px;
+
+font-size:22px;
+font-weight:bold;
+
+background:rgba(0,0,0,0.25);
+padding:10px 20px;
+border-radius:10px;
+
+}
+
+/* game area */
+
+#game{
+
+position:relative;
+
+width:90vw;
+height:65vh;
+
+border:2px solid rgba(255,255,255,0.5);
+border-radius:12px;
+
+backdrop-filter:blur(6px);
+
+overflow:hidden;
+
+}
+
+/* bubbles */
+
+.bubble{
+
+position:absolute;
+border-radius:50%;
+
+cursor:pointer;
+
+animation:float 4s linear forwards;
+
+box-shadow:0 0 15px rgba(255,255,255,0.5);
+
+}
+
+@keyframes float{
+
+from{
+transform:translateY(200px);
+}
+
+to{
+transform:translateY(-800px);
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="scoreBoard">Score: 0</div>
+
+<h1>Pop The Colors</h1>
+<p>Click the bubbles</p>
+
+<div id="game"></div>
+
+<audio id="music" loop>
+<source src="https://ndatar12025-bot.github.io/voice/sound-[AudioTrimmer.com].mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+const game=document.getElementById("game")
+const music=document.getElementById("music")
+const scoreBoard=document.getElementById("scoreBoard")
+
+let score=0
+let clickCount=0
+
+/* create bubbles */
+
+function createBubble(){
+
+let bubble=document.createElement("div")
+bubble.classList.add("bubble")
+
+let size=Math.random()*60+30
+
+bubble.style.width=size+"px"
+bubble.style.height=size+"px"
+
+bubble.style.left=Math.random()*window.innerWidth+"px"
+bubble.style.bottom="-100px"
+
+/* random soft color */
+
+let colors=[
+"#ff6b6b",
+"#ffd93d",
+"#6bcBef",
+"#a0e7e5",
+"#b388ff",
+"#ff9a9e"
+]
+
+bubble.style.background=
+colors[Math.floor(Math.random()*colors.length)]
+
+game.appendChild(bubble)
+
+/* bubble click */
+
+bubble.addEventListener("click",()=>{
+
+bubble.remove()
+
+score++
+clickCount++
+
+scoreBoard.innerText="Score: "+score
+
+/* play audio on second click */
+
+if(clickCount===2){
+
+music.play()
+
+}
+
+})
+
+setTimeout(()=>{
+bubble.remove()
+},4000)
+
+}
+
+setInterval(createBubble,600)
+
+</script>
+
+</body>
+</html>
