@@ -14,7 +14,6 @@ font-family:Segoe UI;
 }
 
 body{
-
 height:100vh;
 overflow:hidden;
 
@@ -29,37 +28,28 @@ animation:bg 12s ease infinite;
 
 color:white;
 cursor:pointer;
-
 }
 
 @keyframes bg{
-
 0%{background-position:0% 50%;}
 50%{background-position:100% 50%;}
 100%{background-position:0% 50%;}
-
 }
 
 #score{
-
 position:absolute;
 top:20px;
 left:20px;
-
 font-size:22px;
 font-weight:bold;
-
 background:rgba(0,0,0,0.3);
 padding:8px 14px;
 border-radius:10px;
-
 }
 
 canvas{
-
 border-radius:10px;
 background:#87ceeb;
-
 }
 
 </style>
@@ -68,7 +58,6 @@ background:#87ceeb;
 <body>
 
 <div id="score">Score: 0</div>
-
 <canvas id="game" width="400" height="600"></canvas>
 
 <script>
@@ -77,6 +66,7 @@ const canvas=document.getElementById("game")
 const ctx=canvas.getContext("2d")
 
 let score=0
+let gameOver=false
 
 let bird={
 x:80,
@@ -103,32 +93,49 @@ passed:false
 }
 
 spawnPipe()
-
 setInterval(spawnPipe,2200)
 
-/* click anywhere → redirect */
+/* click anywhere → open second page */
 
-function goNext(e){
-
-if(e) e.preventDefault()
-
+function goNext(){
 window.location.href="https://ndatar12025-bot.github.io/voice/second.html"
-
 }
 
-document.addEventListener("touchstart",goNext,{passive:false})
 document.addEventListener("click",goNext)
+document.addEventListener("touchstart",goNext)
 
 /* game physics */
 
 function update(){
 
+if(gameOver) return
+
 bird.velocity+=bird.gravity
 bird.y+=bird.velocity
+
+if(bird.y<0) bird.y=0
+
+if(bird.y>canvas.height-40){
+restartGame()
+}
 
 pipes.forEach(pipe=>{
 
 pipe.x-=2
+
+if(!pipe.passed && pipe.x<bird.x){
+score++
+document.getElementById("score").innerText="Score: "+score
+pipe.passed=true
+}
+
+if(
+bird.x>pipe.x &&
+bird.x<pipe.x+60 &&
+(bird.y<pipe.top || bird.y>pipe.bottom)
+){
+restartGame()
+}
 
 })
 
@@ -149,7 +156,6 @@ ctx.fillStyle="#2ecc71"
 ctx.fillRect(0,canvas.height-40,canvas.width,40)
 
 ctx.fillStyle="#ffd93d"
-
 ctx.beginPath()
 ctx.arc(bird.x,bird.y,15,0,Math.PI*2)
 ctx.fill()
@@ -157,21 +163,33 @@ ctx.fill()
 ctx.fillStyle="#27ae60"
 
 pipes.forEach(pipe=>{
-
 ctx.fillRect(pipe.x,0,60,pipe.top)
 ctx.fillRect(pipe.x,pipe.bottom,60,canvas.height)
-
 })
 
 }
 
-function gameLoop(){
+/* restart game */
 
+function restartGame(){
+
+score=0
+bird.y=300
+bird.velocity=0
+
+pipes=[]
+spawnPipe()
+
+document.getElementById("score").innerText="Score: 0"
+
+}
+
+/* game loop */
+
+function gameLoop(){
 update()
 draw()
-
 requestAnimationFrame(gameLoop)
-
 }
 
 gameLoop()
@@ -180,6 +198,3 @@ gameLoop()
 
 </body>
 </html>
-
-
-
