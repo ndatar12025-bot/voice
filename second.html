@@ -2,6 +2,7 @@
 <html>
 <head>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hidden Art Experience</title>
 
 <style>
@@ -26,8 +27,6 @@ color:white;
 font-size:48px;
 text-align:center;
 
-cursor:pointer;
-
 transition:background 0.1s;
 
 }
@@ -37,7 +36,6 @@ transition:background 0.1s;
 #text{
 
 z-index:2;
-
 animation:glow 1s infinite alternate;
 
 }
@@ -53,8 +51,6 @@ text-shadow:0 0 40px white,0 0 60px white;
 }
 
 }
-
-/* particle canvas */
 
 canvas{
 
@@ -72,22 +68,21 @@ left:0;
 
 <div id="text">You Discovered The Hidden Art</div>
 
-<audio id="music" loop>
-<source src="https://ndatar12025-bot.github.io/voice/sound-[AudioTrimmer.com].mp3" type="audio/mpeg">
+<audio id="music" autoplay loop>
+<source src="https://ndatar12025-bot.github.io/voice/audio.mp3" type="audio/mpeg">
 </audio>
 
 <canvas id="canvas"></canvas>
 
 <script>
 
-/* AUDIO PLAY AFTER USER CLICK */
+/* play audio when page loads */
 
 const music = document.getElementById("music")
 
-document.body.addEventListener("click", () => {
-music.play()
+window.addEventListener("load",()=>{
+music.play().catch(()=>{})
 })
-
 
 /* RANDOM BACKGROUND COLORS */
 
@@ -103,7 +98,6 @@ document.body.style.background="rgb("+r+","+g+","+b+")"
 
 setInterval(changeColor,120)
 
-
 /* PARTICLE ANIMATION */
 
 const canvas=document.getElementById("canvas")
@@ -117,13 +111,11 @@ let particles=[]
 for(let i=0;i<80;i++){
 
 particles.push({
-
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*3+1,
 speedX:(Math.random()-0.5)*1,
 speedY:(Math.random()-0.5)*1
-
 })
 
 }
