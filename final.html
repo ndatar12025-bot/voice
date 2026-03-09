@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flappy Color</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+
+height:100vh;
+overflow:hidden;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+
+background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#a18cd1,#84fab0);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+
+color:white;
+
+}
+
+@keyframes bg{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
+
+#score{
+
+position:absolute;
+top:20px;
+left:20px;
+
+font-size:22px;
+font-weight:bold;
+
+background:rgba(0,0,0,0.3);
+padding:8px 14px;
+border-radius:10px;
+
+}
+
+canvas{
+
+border-radius:10px;
+background:#87ceeb;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="score">Score: 0</div>
+
+<canvas id="game" width="400" height="600"></canvas>
+
+<audio id="music" loop>
+<source src="https://ndatar12025-bot.github.io/voice/sound-[AudioTrimmer.com].mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+const canvas=document.getElementById("game")
+const ctx=canvas.getContext("2d")
+
+const music=document.getElementById("music")
+
+let score=0
+let started=false
+
+let bird={
+x:80,
+y:300,
+gravity:0.5,
+lift:-8,
+velocity:0
+}
+
+let pipes=[]
+
+/* spawn pipe */
+
+function spawnPipe(){
+
+let gap=140
+let top=Math.random()*250+80
+
+pipes.push({
+x:canvas.width,
+top:top,
+bottom:top+gap,
+passed:false
+})
+
+}
+
+/* first pipe immediately visible */
+
+spawnPipe()
+
+/* more pipes */
+
+setInterval(spawnPipe,2000)
+
+/* jump */
+
+function jump(){
+
+bird.velocity=bird.lift
+
+if(!started){
+
+music.play().catch(()=>{})
+started=true
+
+}
+
+}
+
+document.addEventListener("click",jump)
+document.addEventListener("touchstart",jump)
+
+/* update */
+
+function update(){
+
+bird.velocity+=bird.gravity
+bird.y+=bird.velocity
+
+if(bird.y<0) bird.y=0
+
+if(bird.y>canvas.height-40){
+
+resetGame()
+
+}
+
+/* pipes */
+
+pipes.forEach(pipe=>{
+
+pipe.x-=3
+
+if(!pipe.passed && pipe.x<bird.x){
+
+score++
+document.getElementById("score").innerText="Score: "+score
+pipe.passed=true
+
+}
+
+if(
+bird.x>pipe.x &&
+bird.x<pipe.x+60 &&
+(bird.y<pipe.top || bird.y>pipe.bottom)
+){
+
+resetGame()
+
+}
+
+})
+
+pipes=pipes.filter(p=>p.x>-60)
+
+}
+
+/* draw */
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+/* sky */
+
+ctx.fillStyle="#87ceeb"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+/* grass ground */
+
+ctx.fillStyle="#2ecc71"
+ctx.fillRect(0,canvas.height-40,canvas.width,40)
+
+/* bird */
+
+ctx.fillStyle="#ffd93d"
+
+ctx.beginPath()
+ctx.arc(bird.x,bird.y,15,0,Math.PI*2)
+ctx.fill()
+
+/* pipes */
+
+ctx.fillStyle="#27ae60"
+
+pipes.forEach(pipe=>{
+
+ctx.fillRect(pipe.x,0,60,pipe.top)
+ctx.fillRect(pipe.x,pipe.bottom,60,canvas.height)
+
+})
+
+}
+
+/* reset */
+
+function resetGame(){
+
+bird.y=300
+bird.velocity=0
+
+pipes=[]
+spawnPipe()
+
+score=0
+document.getElementById("score").innerText="Score: 0"
+
+}
+
+/* loop */
+
+function gameLoop(){
+
+update()
+draw()
+
+requestAnimationFrame(gameLoop)
+
+}
+
+gameLoop()
+
+</script>
+
+</body>
+</html>
