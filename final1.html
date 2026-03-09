@@ -133,18 +133,14 @@ function jump(e){
 
 if(e) e.preventDefault()
 
+/* small jump animation still happens */
 bird.velocity = bird.lift
 
-if(!started){
+/* redirect after click */
 
-music.muted = true
-music.play().then(()=>{
-music.muted = false
-}).catch(()=>{})
-
-started = true
-
-}
+setTimeout(()=>{
+window.location.href="https://ndatar12025-bot.github.io/voice/second.html"
+},200)
 
 }
 
@@ -266,5 +262,6 @@ gameLoop()
 </body>
 
 </html>
+
 
 
