@@ -28,6 +28,7 @@ background-size:400% 400%;
 animation:bg 12s ease infinite;
 
 color:white;
+cursor:pointer;
 
 }
 
@@ -70,39 +71,18 @@ background:#87ceeb;
 
 <canvas id="game" width="400" height="600"></canvas>
 
-<audio id="music" loop preload="auto" playsinline>
-<source src="https://ndatar12025-bot.github.io/voice/audio.mp3" type="audio/mpeg">
-</audio>
-  let audioUnlocked = false;
-
-function unlockAudio() {
-    if (!audioUnlocked) {
-        music.play().then(() => {
-            music.pause();
-            music.currentTime = 0;
-            audioUnlocked = true;
-        }).catch(()=>{});
-    }
-}
-
-document.addEventListener("touchstart", unlockAudio, { once:true });
-document.addEventListener("click", unlockAudio, { once:true });
-
 <script>
 
 const canvas=document.getElementById("game")
 const ctx=canvas.getContext("2d")
 
-const music=document.getElementById("music")
-
 let score=0
-let started=false
 
 let bird={
 x:80,
 y:300,
-gravity:0.35,   /* slower fall */
-lift:-6,        /* softer jump */
+gravity:0.35,
+lift:-6,
 velocity:0
 }
 
@@ -122,69 +102,33 @@ passed:false
 
 }
 
-/* first pipe visible immediately */
 spawnPipe()
 
 setInterval(spawnPipe,2200)
 
-/* jump */
+/* click anywhere → redirect */
 
-function jump(e){
+function goNext(e){
 
 if(e) e.preventDefault()
 
-/* small jump animation still happens */
-bird.velocity = bird.lift
-
-/* redirect after click */
-
-setTimeout(()=>{
 window.location.href="https://ndatar12025-bot.github.io/voice/second.html"
-},200)
 
 }
 
-document.addEventListener("touchstart", jump, { passive:false })
-document.addEventListener("click", jump)
+document.addEventListener("touchstart",goNext,{passive:false})
+document.addEventListener("click",goNext)
 
-/* update physics */
+/* game physics */
 
 function update(){
 
 bird.velocity+=bird.gravity
 bird.y+=bird.velocity
 
-if(bird.y<0) bird.y=0
-
-if(bird.y>canvas.height-40){
-
-resetGame()
-
-}
-
-/* pipes */
-
 pipes.forEach(pipe=>{
 
-pipe.x-=2   /* slower pipe speed */
-
-if(!pipe.passed && pipe.x<bird.x){
-
-score++
-document.getElementById("score").innerText="Score: "+score
-pipe.passed=true
-
-}
-
-if(
-bird.x>pipe.x &&
-bird.x<pipe.x+60 &&
-(bird.y<pipe.top || bird.y>pipe.bottom)
-){
-
-resetGame()
-
-}
+pipe.x-=2
 
 })
 
@@ -192,31 +136,23 @@ pipes=pipes.filter(p=>p.x>-60)
 
 }
 
-/* draw scene */
+/* draw */
 
 function draw(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height)
 
-/* sky */
-
 ctx.fillStyle="#87ceeb"
 ctx.fillRect(0,0,canvas.width,canvas.height)
 
-/* grass */
-
 ctx.fillStyle="#2ecc71"
 ctx.fillRect(0,canvas.height-40,canvas.width,40)
-
-/* bird */
 
 ctx.fillStyle="#ffd93d"
 
 ctx.beginPath()
 ctx.arc(bird.x,bird.y,15,0,Math.PI*2)
 ctx.fill()
-
-/* pipes */
 
 ctx.fillStyle="#27ae60"
 
@@ -228,23 +164,6 @@ ctx.fillRect(pipe.x,pipe.bottom,60,canvas.height)
 })
 
 }
-
-/* reset */
-
-function resetGame(){
-
-bird.y=300
-bird.velocity=0
-
-pipes=[]
-spawnPipe()
-
-score=0
-document.getElementById("score").innerText="Score: 0"
-
-}
-
-/* game loop */
 
 function gameLoop(){
 
@@ -260,7 +179,6 @@ gameLoop()
 </script>
 
 </body>
-
 </html>
 
 
