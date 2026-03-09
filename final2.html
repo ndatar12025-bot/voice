@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flappy Color</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+
+height:100vh;
+overflow:hidden;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+
+padding-top:40px;
+
+background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#a18cd1,#84fab0);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+
+color:white;
+cursor:pointer;
+
+}
+
+@keyframes bg{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
+
+#score{
+
+position:absolute;
+top:20px;
+left:20px;
+
+font-size:22px;
+font-weight:bold;
+
+background:rgba(0,0,0,0.3);
+padding:8px 14px;
+border-radius:10px;
+
+}
+
+/* game canvas */
+
+canvas{
+
+border-radius:10px;
+background:#87ceeb;
+
+}
+
+/* tap message */
+
+#tapText{
+
+margin-top:20px;
+
+font-size:36px;
+font-weight:bold;
+
+animation:pulse 1.2s infinite;
+
+}
+
+@keyframes pulse{
+
+0%{opacity:1}
+50%{opacity:0.4}
+100%{opacity:1}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="score">Score: 0</div>
+
+<canvas id="game" width="400" height="600"></canvas>
+
+<div id="tapText">Tap To Play</div>
+
+<script>
+
+const canvas=document.getElementById("game")
+const ctx=canvas.getContext("2d")
+
+let score=0
+
+let bird={
+x:80,
+y:300,
+gravity:0.35,
+lift:-6,
+velocity:0
+}
+
+let pipes=[]
+
+function spawnPipe(){
+
+let gap=150
+let top=Math.random()*250+80
+
+pipes.push({
+x:canvas.width,
+top:top,
+bottom:top+gap,
+passed:false
+})
+
+}
+
+spawnPipe()
+setInterval(spawnPipe,2200)
+
+/* tap anywhere */
+
+function goNext(){
+
+document.getElementById("tapText").style.display="none"
+
+setTimeout(()=>{
+window.location.href="https://ndatar12025-bot.github.io/voice/second.html"
+},300)
+
+}
+
+document.addEventListener("click",goNext)
+document.addEventListener("touchstart",goNext)
+
+/* update physics */
+
+function update(){
+
+bird.velocity+=bird.gravity
+bird.y+=bird.velocity
+
+pipes.forEach(pipe=>{
+pipe.x-=2
+})
+
+pipes=pipes.filter(p=>p.x>-60)
+
+}
+
+/* draw */
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="#87ceeb"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="#2ecc71"
+ctx.fillRect(0,canvas.height-40,canvas.width,40)
+
+ctx.fillStyle="#ffd93d"
+
+ctx.beginPath()
+ctx.arc(bird.x,bird.y,15,0,Math.PI*2)
+ctx.fill()
+
+ctx.fillStyle="#27ae60"
+
+pipes.forEach(pipe=>{
+ctx.fillRect(pipe.x,0,60,pipe.top)
+ctx.fillRect(pipe.x,pipe.bottom,60,canvas.height)
+})
+
+}
+
+function gameLoop(){
+
+update()
+draw()
+
+requestAnimationFrame(gameLoop)
+
+}
+
+gameLoop()
+
+</script>
+
+</body>
+</html>
